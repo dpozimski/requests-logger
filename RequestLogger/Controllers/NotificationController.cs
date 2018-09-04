@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using Microsoft.AspNetCore.Mvc;
 using RequestsLogger.Repository;
 
@@ -21,18 +24,20 @@ namespace RequestLogger.Controllers
         }
 
         [HttpGet]
-        public IActionResult Ping(HttpRequestMessage request)
+        public IActionResult Ping()
         {
             return StatusCode((int)HttpStatusCode.Accepted);
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessNotificationAsync(HttpRequestMessage request)
+        public async Task<IActionResult> ProcessNotificationAsync()
         {
-            var content = await request.Content.ReadAsStringAsync();
-
-            await _requestsRepository.InsertAsync(content);
-
+            using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
+            {
+                var content = await reader.ReadToEndAsync();
+                await _requestsRepository.InsertAsync(content);
+            }
+            
             return StatusCode((int)HttpStatusCode.Accepted);
         }
     }
