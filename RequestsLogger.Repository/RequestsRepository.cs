@@ -17,13 +17,13 @@ namespace RequestsLogger.Repository
             _connectionString = configuration.GetConnectionString("DatabaseConnectionString");
         }
 
-        public async Task InsertAsync(string content)
+        public async Task InsertAsync(string content, string clientIp)
         {
-            const string sql = "INSERT INTO [dbo].[Requests] (TimeStamp, Content) Values (@TimeStamp, @Content);";
+            const string sql = "INSERT INTO [dbo].[Requests] (TimeStamp, Content, ClientIp) Values (@TimeStamp, @Content, @ClientIp);";
 
             using (var connection = new SqlConnection(_connectionString))
             {
-                await connection.ExecuteAsync(sql, new { TimeStamp = DateTime.Now, Content = content });
+                await connection.ExecuteAsync(sql, new { TimeStamp = DateTime.Now, Content = content, ClientIp = clientIp });
             }
         }
     }

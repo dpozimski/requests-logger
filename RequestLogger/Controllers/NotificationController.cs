@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RequestsLogger.Repository;
 
@@ -17,10 +18,13 @@ namespace RequestLogger.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly IRequestsRepository _requestsRepository;
+        private readonly IHttpContextAccessor _accessor;
 
-        public NotificationController(IRequestsRepository requestsRepository)
+        public NotificationController(IRequestsRepository requestsRepository,
+                                      IHttpContextAccessor accessor)
         {
             _requestsRepository = requestsRepository;
+            _accessor = accessor;
         }
 
         [HttpGet]
@@ -32,10 +36,12 @@ namespace RequestLogger.Controllers
         [HttpPost]
         public async Task<IActionResult> ProcessNotificationAsync()
         {
+            var clientIp = _accessor.HttpContext.Connection.RemoteIpAddress.ToString();
+
             using (StreamReader reader = new StreamReader(Request.Body, Encoding.UTF8))
             {
                 var content = await reader.ReadToEndAsync();
-                await _requestsRepository.InsertAsync(content);
+                await _requestsRepository.InsertAsync(content, clientIp);
             }
             
             return StatusCode((int)HttpStatusCode.Accepted);
