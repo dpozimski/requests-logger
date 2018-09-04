@@ -10,18 +10,18 @@ namespace RequestsLogger.Repository
 {
     public class RequestsRepository : IRequestsRepository
     {
-        private readonly IConfiguration _configuration;
+        private readonly string _connectionString;
 
         public RequestsRepository(IConfiguration configuration)
         {
-            _configuration = configuration;
+            _connectionString = configuration.GetConnectionString("DatabaseConnectionString");
         }
 
         public async Task InsertAsync(string content)
         {
-            var sql = "INSERT INTO [dbo].[Requests] (TimeStamp, Content) Values (@TimeStamp, @Content);";
+            const string sql = "INSERT INTO [dbo].[Requests] (TimeStamp, Content) Values (@TimeStamp, @Content);";
 
-            using (var connection = new SqlConnection(_configuration.GetConnectionString("RequestsDB")))
+            using (var connection = new SqlConnection(_connectionString))
             {
                 await connection.ExecuteAsync(sql, new { TimeStamp = DateTime.Now, Content = content });
             }
