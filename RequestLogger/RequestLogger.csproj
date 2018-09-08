@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DockerTargetOS>Windows</DockerTargetOS>
     <UserSecretsId>d74f2ff7-321e-4ac4-9bf6-e867451a548d</UserSecretsId>
+    <ApplicationInsightsResourceId>/subscriptions/ba5c46e1-a3ee-4b66-8328-72398979b791/resourcegroups/RequestsLogger/providers/microsoft.insights/components/RequestLogger</ApplicationInsightsResourceId>
+    <ApplicationInsightsAnnotationResourceId>/subscriptions/ba5c46e1-a3ee-4b66-8328-72398979b791/resourcegroups/RequestsLogger/providers/microsoft.insights/components/RequestLogger</ApplicationInsightsAnnotationResourceId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,12 +13,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.1916590" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\RequestsLogger.Repository\RequestsLogger.Repository.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services" />
   </ItemGroup>
 
 </Project>
